@@ -2,48 +2,47 @@ import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
-
         String dbURL = "jdbc:oracle:thin:system/lEAfs1967@localhost:1521:orcl1";
 
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+
+        String updateSQL = "UPDATE employees SET name = ?, age = ? WHERE id = ?";
 
         try {
-            // Connect to Oracle Database
+            // Connect to database
             connection = DriverManager.getConnection(dbURL);
-            System.out.println("Connected to Oracle database server!");
+            preparedStatement = connection.prepareStatement(updateSQL);
 
-            // Create a SQL SELECT query
-            String sql = "SELECT * FROM employees";
+            // Define the ID you want to update
+            int idToUpdate = 1;  // Now id is defined
 
-            // Create a Statement object to execute the query
-            statement = connection.createStatement();
+            // Set the parameters for PreparedStatement
+            preparedStatement.setString(1, "test update");
+            preparedStatement.setInt(2, 55);
+            preparedStatement.setInt(3, idToUpdate);
 
-            // Execute the query and get the ResultSet
-            resultSet = statement.executeQuery(sql);
-
-            // Process the ResultSet to retrieve data
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                int age = resultSet.getInt("age");
-
-                // Print the data
-                System.out.println("Employee ID: " + id + ", Name: " + name + " " + age);
+            // Execute the update
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("\nSuccessfully updated employee with ID: " + idToUpdate);
+            } else {
+                System.out.println("\nNo employee found with ID: " + idToUpdate);
             }
+
         } catch (SQLException e) {
-            System.out.println("Ups, something went wrong!");
+            System.out.println("Error in UPDATE operation!");
             e.printStackTrace();
         } finally {
-            // Close resources to prevent memory leaks
+            // Close resources
             try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
+                if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-   }
+    }
 }
