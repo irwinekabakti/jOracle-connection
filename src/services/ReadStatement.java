@@ -24,10 +24,7 @@ public class ReadStatement {
                         ", Age: " + age +
                         ", Address: " + address +
                         ", Salary: $" + salary);
-
-//                System.out.println("Employee ID: " + id + ", Name: " + name + ", Age: " + age);
             }
-
         } catch (SQLException e) {
             System.out.println("Error in READ operation!");
             e.printStackTrace();
@@ -53,7 +50,6 @@ public class ReadStatement {
                             ", Age: " + age +
                             ", Address: " + address +
                             ", Salary: $" + salary);
-//                    System.out.println("Employee ID: " + id + ", Name: " + name + ", Age: " + age);
                 } else {
                     System.out.println("No employee found with ID: " + id);
                 }
