@@ -1,47 +1,44 @@
-import java.sql.*;
+import dto.EmployeesDTO;
+import entity.Employees;
+import services.DeleteStatement;
+import services.InsertStatement;
+import services.ReadStatement;
+import services.UpdateStatement;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        String dbURL = "jdbc:oracle:thin:system/lEAfs1967@localhost:1521:orcl1";
+        ReadStatement readOp = new ReadStatement();
+        InsertStatement insertOp = new InsertStatement();
+        UpdateStatement updateOp = new UpdateStatement();
+        DeleteStatement deleteOp = new DeleteStatement();
 
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        PreparedStatement preparedStatement = null;
+        // Test Insert
+        System.out.println("\nTesting INSERT:");
+        insertOp.createEmployee("Mudryk", 30, "Ukraine", 9999);
 
-        String deleteSQL = "DELETE FROM employees WHERE id = ?";
+        // Create a list of employees
+        List<Employees> employees = new ArrayList<>();
+        employees.add(new Employees("John Doe", 30, "Norway", 3400));
+        employees.add(new Employees("Jane Smith", 25, "Wales", 4600));
+        employees.add(new Employees("Bob Johnson", 35, "Scotland", 1200));
 
 
-        try {
-            // Connect to database
-            connection = DriverManager.getConnection(dbURL);
-            preparedStatement = connection.prepareStatement(deleteSQL);
+        // Test Read
+        System.out.println("\nTesting READ:");
+        readOp.getAllEmployees();
+        readOp.getEmployeeById(2);
 
-            // Define the ID you want to delete
-            int idToDelete = 1;  // Change this ID as needed
+        // Test Update - Only updating name and age
+        EmployeesDTO updateEmployee = new EmployeesDTO(2, "Test Updated", 31, null, null);
+        updateOp.updateEmployee(updateEmployee);
 
-            // Set the parameter for PreparedStatement
-            preparedStatement.setInt(1, idToDelete);
+        // Verify the update
+        readOp.getEmployeeById(2);
 
-            // Execute the delete
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("\nSuccessfully deleted employee with ID: " + idToDelete);
-            } else {
-                System.out.println("\nNo employee found with ID: " + idToDelete);
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error in DELETE operation!");
-            e.printStackTrace();
-        } finally {
-            // Close resources
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        // Test Delete
+        System.out.println("\nTesting DELETE:");
+        deleteOp.deleteEmployee(2);
+        readOp.getAllEmployees();
     }
 }
