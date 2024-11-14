@@ -9,31 +9,30 @@ public class Main {
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
 
-        String updateSQL = "UPDATE employees SET name = ?, age = ? WHERE id = ?";
+        String deleteSQL = "DELETE FROM employees WHERE id = ?";
+
 
         try {
             // Connect to database
             connection = DriverManager.getConnection(dbURL);
-            preparedStatement = connection.prepareStatement(updateSQL);
+            preparedStatement = connection.prepareStatement(deleteSQL);
 
-            // Define the ID you want to update
-            int idToUpdate = 1;  // Now id is defined
+            // Define the ID you want to delete
+            int idToDelete = 1;  // Change this ID as needed
 
-            // Set the parameters for PreparedStatement
-            preparedStatement.setString(1, "test update");
-            preparedStatement.setInt(2, 55);
-            preparedStatement.setInt(3, idToUpdate);
+            // Set the parameter for PreparedStatement
+            preparedStatement.setInt(1, idToDelete);
 
-            // Execute the update
+            // Execute the delete
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("\nSuccessfully updated employee with ID: " + idToUpdate);
+                System.out.println("\nSuccessfully deleted employee with ID: " + idToDelete);
             } else {
-                System.out.println("\nNo employee found with ID: " + idToUpdate);
+                System.out.println("\nNo employee found with ID: " + idToDelete);
             }
 
         } catch (SQLException e) {
-            System.out.println("Error in UPDATE operation!");
+            System.out.println("Error in DELETE operation!");
             e.printStackTrace();
         } finally {
             // Close resources
