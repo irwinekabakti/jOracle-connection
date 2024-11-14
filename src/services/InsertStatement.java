@@ -7,16 +7,35 @@ import java.util.List;
 public class InsertStatement {
     private static final String DB_URL = "jdbc:oracle:thin:system/lEAfs1967@localhost:1521:orcl1";
 
-    public boolean createEmployee(String name, int age, String address, double salary) {
+    public boolean createEmployee(String name, Integer age, String address, Double salary) {
         String insertSQL = "INSERT INTO employees (name, age, address, salary) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
 
+            // Set the 'name' parameter
             preparedStatement.setString(1, name);
-            preparedStatement.setInt(2, age);
-            preparedStatement.setString(3, address);
-            preparedStatement.setDouble(4, salary);
+
+            // Set the 'age' parameter, check if age is null and handle it
+            if (age != null) {
+                preparedStatement.setInt(2, age);
+            } else {
+                preparedStatement.setNull(2, Types.INTEGER);
+            }
+
+            // Set the 'address' parameter, check if address is null and handle it
+            if (address != null) {
+                preparedStatement.setString(3, address);
+            } else {
+                preparedStatement.setNull(3, Types.VARCHAR);
+            }
+
+            // Set the 'salary' parameter, check if salary is null and handle it
+            if (salary != null) {
+                preparedStatement.setDouble(4, salary);
+            } else {
+                preparedStatement.setNull(4, Types.DOUBLE);
+            }
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -43,10 +62,29 @@ public class InsertStatement {
             connection.setAutoCommit(false);
 
             for (Employees emp : employees) {
+                // Set the 'name' parameter
                 preparedStatement.setString(1, emp.getName());
-                preparedStatement.setInt(2, emp.getAge());
-                preparedStatement.setString(3, emp.getAddress());
-                preparedStatement.setDouble(4, emp.getSalary());
+
+                // Set the 'age' parameter, check if age is null and handle it
+                if (emp.getAge() != null) {
+                    preparedStatement.setInt(2, emp.getAge());
+                } else {
+                    preparedStatement.setNull(2, Types.INTEGER);
+                }
+
+                // Set the 'address' parameter, check if address is null and handle it
+                if (emp.getAddress() != null) {
+                    preparedStatement.setString(3, emp.getAddress());
+                } else {
+                    preparedStatement.setNull(3, Types.VARCHAR);
+                }
+
+                // Set the 'salary' parameter, check if salary is null and handle it
+                if (emp.getSalary() != null) {
+                    preparedStatement.setDouble(4, emp.getSalary());
+                } else {
+                    preparedStatement.setNull(4, Types.DOUBLE);
+                }
 
                 preparedStatement.addBatch();
             }
